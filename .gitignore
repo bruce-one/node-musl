@@ -1,0 +1,10 @@
+/build/
+/include/
+/lib/
+/share/
+build/
+*.out
+*.log
+/x86_64-linux-musl/
+/bootstrap/
+src/*-musl/

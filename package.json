@@ -1,0 +1,26 @@
+{
+  "name": "node-musl",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "bin": {
+    "musl-gcc": "./bin/musl-gcc",
+    "musl-g++": "./bin/musl-g++",
+    "musl-ld": "./bin/musl-ld",
+    "musl-exports": "./bin/exports.js",
+    "musl-env": "./bin/env.js"
+  },
+  "scripts": {
+    "test": "node test/test.js",
+    "install": "node-gyp rebuild",
+    "postinstall": "node symlinks.js"
+  },
+  "author": {
+    "name": "Bryce Gibson"
+  },
+  "license": "ISC",
+  "gypfile": true
+}

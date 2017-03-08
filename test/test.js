@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+const { join } = require('path')
+const { fork, spawnSync } = require('child_process')
+const { unlinkSync } = require('fs')
+const assert = require('assert')
+
+const bin = join(__dirname, 'hello.out')
+
+const proc = fork(join(__dirname, '..'), [ '-static', join(__dirname, 'hello.c'), '-o', bin ], { cwd: __dirname })
+
+process.on('unhandledRejection', (err) => { throw err })
+
+new Promise( function testGcc(resolve) {
+  proc.on('exit', () => {
+    checkBinary()
+    resolve()
+  })
+})
+.then( () => {
+  const { stdout, status } = spawnSync(
+    join(__dirname, '..', 'bin', 'env.js')
+    , [ 'sh', '-c', 'echo CC=$CC CXX=$CXX LD=$LD' ]
+    , { env: { CC: 'fail', CXX: 'fail', LD: 'fail' }, encoding: 'utf8' })
+  assert.equal(status, 0, 'exit success')
+  assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
+  assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
+  assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
+})
+.then( () => {
+  const { stdout, status } = spawnSync(
+    'sh'
+    , [ '-c', `eval $(${join(__dirname, '..', 'bin', 'exports.js')});  echo CC=$CC CXX=$CXX LD=$LD` ]
+    , { env: { CC: 'fail', CXX: 'fail', LD: 'fail' }, encoding: 'utf8' })
+  assert.equal(status, 0, 'exit success')
+  assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
+  assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
+  assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
+})
+
+function checkBinary() {
+  const hProc = spawnSync(bin)
+  assert.equal(hProc.status, 0, 'exit success')
+  assert.equal(hProc.stdout.toString('utf8'), 'hello', 'stdout is correct')
+  unlinkSync(bin)
+}
