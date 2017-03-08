@@ -37,6 +37,14 @@ new Promise( function testGcc(resolve) {
   assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
   assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
 })
+.then( () => {
+  const env = Object.assign({}, process.env)
+  require('..').setExports()
+  assert.equal(/gcc$/i.test(process.env.CC), true, 'set CC')
+  assert.equal(/g\+\+$/i.test(process.env.CXX), true, 'set CXX')
+  assert.equal(/ld$/i.test(process.env.LD), true, 'set LD')
+  Object.keys(process.env).forEach( (k) => env[k] ? process.env[k] = env[k] : delete process.env[k])
+})
 
 function checkBinary() {
   const hProc = spawnSync(bin)
