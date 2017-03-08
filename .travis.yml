@@ -9,7 +9,7 @@ env:
 install:
   - ./travisLogInstall.js
   - npm run test
-  - if test "${COMMIT_MESSAGE#*'[build]'}" != "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
+  - if test "${COMMIT_MESSAGE#*'[publish]'}" "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
 before_script:
   - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish; fi
   - node-pre-gyp clean
