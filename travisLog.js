@@ -5,7 +5,7 @@ const { spawn } = require('child_process')
 let stdout = Buffer.alloc(0)
 let stderr = Buffer.alloc(0)
 
-const proc = spawn('npm', [ 'install', '--build-from-source', '--unsafe-perm' ])
+const proc = spawn(process.argv[2], process.argv.slice(3))
 
 proc.stdout.on('data', (d) => {
   const MAKE_REGEXP = /^make\[[12]\].*$/gm
