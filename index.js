@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-// TODO function to export CC
-
 const { join } = require('path')
 const { spawnSync } = require('child_process')
 const packageJson = require('./package.json')

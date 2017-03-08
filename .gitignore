@@ -8,3 +8,5 @@ build/
 /x86_64-linux-musl/
 /bootstrap/
 src/*-musl/
+.env
+/node_modules/
