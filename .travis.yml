@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - 6
+dist: trusty
+env:
+  global:
+    secure: GM28mePDOytl0OQkWU8ayDmWbk4yn8YNiFD3zUJV/FJq9RbIZl5UhUgZ75TWPILusficM1jCPsQZRLZrXYHyA2mquH3lxM7T83O7YwYtGYS00/FJFZEsEnAln8tTBCkzvhK0++wypGJg05liqy3K3RIp75QIKSUGoETfaurvwvm2fbxhRaw763TJi6aktjcv6BwzlpsAmWDFw7G9lGvSAgwF2v6f8E8F1P3vLzCmxXX/u0iQyE0LXFgqrizmALwS+bFQJDNl+jETZpMPLHj8LWZC7vmOORRop5mVBDBuPHuFIBcKqVVnan+rZyPEd6QSwojNY+ya+ymEWp5tL/xfuOf5ql3Mw2mXEghhfhQHYQATACUcrXHBsEfCEXsXsVDB9Zg9C6llbWB8xfLIVuwNK1NnOcnZrZJHxj4X4mEEeUdALtYe70xdK3HpIhFrz0CvWtYjl2OhA5tkH4OZOxAUSHtDb/KdXEzw4p80Jl1xxSsb2GhGe3lkTW5SqI34+Sy6CftVRBb86NgpmU5JaR041m5W5h2RhJxiLJtJHBwWL+DeMQ7gObo1vDJ/LvlFprLTAJ+q96SIu6P3CdCsS2b1a381ImXZBVL75qn0IPKMqJzMxjxifXFndWnhp2X7YTOc6nrfOqe24DlJLKEKR0psIndwIALXVDvg36R9s0pNymc=
+
+install:
+  - ./travisLogInstall.js
+  - npm run test
+  - if test "${COMMIT_MESSAGE#*'[build]'}" != "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
+before_script:
+  - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish; fi
+  - node-pre-gyp clean
+  - node-gyp clean
+script:
+  - npm install --fallback-to-build=false
+  - npm run test
+after_success:
+  - node-pre-gyp info
