@@ -16,7 +16,7 @@
           "inputs": [ "src/" ],
           "outputs": [ "src/x86_64-linux-musl" ],
           "message": "Building x86_64 musl",
-          "action": [ "eval", "cd src/ && node ../generateConfig.js x86_64-linux-musl > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install" ]
+          "action": [ "eval", "cd src/ && node ../generateConfig.js x86_64-linux-musl > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install && touch ../x86_64-linux-musl/node_musl.node" ]
         }
       ]
     }

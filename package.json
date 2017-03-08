@@ -25,7 +25,7 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "install": "node-pre-gyp install --fallback-to-build",
+    "install": "node-pre-gyp install --fallback-to-build --target_platform=hack",
     "postinstall": "node symlinks.js"
   },
   "author": {
@@ -35,7 +35,8 @@
     "module_name": "node_musl",
     "module_path": "x86_64-linux-musl",
     "host": "https://github.com/bruce-one/node-musl/releases/download/",
-    "remote_path": "{version}"
+    "remote_path": "{version}",
+    "package_name": "{module_name}-v{version}-{arch}.tar.gz"
   },
   "license": "ISC",
   "gypfile": true,
