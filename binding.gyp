@@ -7,16 +7,16 @@
         {
           "action_name": "Build bootstrap",
           "inputs": [ "src/" ],
-          "outputs": [ "src/bootstrap" ],
+          "outputs": [ "bootstrap" ],
           "message": "Building bootstrap for rebuilding",
-          "action": [ "eval", "cd src/ && node ../generateBootstrapConfig.js x86_64-linux-musl > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install" ]
+          "action": [ "eval", "cd src/ && node ../generateBootstrapConfig.js > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install" ]
         },
         {
-          "action_name": "Build x86_64",
+          "action_name": "Build static toolchain",
           "inputs": [ "src/" ],
-          "outputs": [ "src/x86_64-linux-musl" ],
-          "message": "Building x86_64 musl",
-          "action": [ "eval", "cd src/ && node ../generateConfig.js x86_64-linux-musl > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install && touch ../x86_64-linux-musl/node_musl.node" ]
+          "outputs": [ "<!@(node -p 'process.arch')-linux-musl" ],
+          "message": "Building musl",
+          "action": [ "eval", "cd src/ && node ../generateConfig.js > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'os.cpus().length + 1') && make install && cd .. && node hardlinks.js && touch <!@(node -p 'process.arch')-linux-musl/node_musl.node" ]
         }
       ]
     }

@@ -11,7 +11,8 @@
     "linux"
   ],
   "cpu": [
-    "x64"
+    "x64",
+    "x86"
   ],
   "directories": {
     "test": "test"
@@ -33,7 +34,7 @@
   },
   "binary": {
     "module_name": "node_musl",
-    "module_path": "x86_64-linux-musl",
+    "module_path": "{arch}-linux-musl",
     "host": "https://github.com/bruce-one/node-musl/releases/download/",
     "remote_path": "{version}",
     "package_name": "{module_name}-v{version}-{arch}.tar.gz"
