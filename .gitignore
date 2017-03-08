@@ -5,7 +5,7 @@
 build/
 *.out
 *.log
-/x86_64-linux-musl/
+/*-linux-musl/
 /bootstrap/
 src/*-musl/
 .env
