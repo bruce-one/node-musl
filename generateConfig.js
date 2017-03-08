@@ -1,6 +1,7 @@
 const path = require('path')
 
-const muslArch = process.arch === 'x64' ? 'x86_64' : process.arch
+const arch = process.argv[2] || process.arch
+const muslArch = arch === 'x64' ? 'x86_64' : (arch === 'ia32' ? 'i686' : arch)
 
 const target = `${muslArch}-linux-musl`
 
