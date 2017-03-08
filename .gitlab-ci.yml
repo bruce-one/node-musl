@@ -1,0 +1,15 @@
+image: node:6
+
+test_build:
+  script:
+    - ./travisLog.js npm install --build-from-source --unsafe-perm
+    - npm run test
+    - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}" ; if test "${COMMIT_MESSAGE#*'[publish]'}" "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi
+    - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish; fi
+    - node-pre-gyp clean
+    - node-gyp clean
+    - npm install --fallback-to-build=false
+    - npm run test
+
+after_script:
+  - node-pre-gyp info
