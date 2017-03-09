@@ -4,6 +4,7 @@ test_build:
   variables:
     DEBUG: node-musl
   script:
+    - export PATH="/usr/local/bin:$PATH"
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test
     - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}" ; if test "${COMMIT_MESSAGE#*'[publish]'}" "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi
