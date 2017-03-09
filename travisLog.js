@@ -36,6 +36,7 @@ Array('SIGINT', 'SIGTERM').forEach( (sig) => process.on(sig, () => proc.kill(sig
 }()
 
 setTimeout(function abort() {
+  process.exitCode = 1
   proc.kill('SIGTERM')
   setTimeout( () => proc.kill('SIGKILL'), 5e3 ).unref()
-}, 120 * 60e3).unref()
+}, 180 * 60e3).unref()
