@@ -2,7 +2,7 @@
 
 const debug = require('debug')('node-musl')
 const { join } = require('path')
-const { fork, spawnSync } = require('child_process')
+const { fork, spawnSync, execFileSync } = require('child_process')
 const { unlinkSync } = require('fs')
 const assert = require('assert')
 
@@ -20,26 +20,23 @@ new Promise( function testGcc(resolve) {
   })
 })
 .then( () => {
-  const { stderr, stdout, status } = spawnSync(
+  const stdout = execFileSync(
     join(__dirname, '..', 'bin', 'env.js')
-    , [ 'sh', '-c', 'echo CC=$CC CXX=$CXX LD=$LD' ]
-
+    , [ 'sh', '-c', 'echo -n CC=$CC CXX=$CXX LD=$LD' ]
     , { env: Object.assign({}, process.env, { CC: 'fail', CXX: 'fail', LD: 'fail' }), encoding: 'utf8' })
   debug('env command stdout "%s"', stdout)
-  debug('env command stderr "%s"', stderr)
-  assert.equal(status, 0, 'exit success')
+  assert.equal(/CC=/i.test(stdout), true, 'has CC')
   assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
   assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
   assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
 })
 .then( () => {
-  const { stdout, stderr, status } = spawnSync(
+  const stdout = execFileSync(
     'sh'
-    , [ '-c', `eval $(${join(__dirname, '..', 'bin', 'exports.js')});  echo CC=$CC CXX=$CXX LD=$LD` ]
-    , { env: Object.assign({}, { CC: 'fail', CXX: 'fail', LD: 'fail' }), encoding: 'utf8' })
+    , [ '-c', `eval $(${join(__dirname, '..', 'bin', 'exports.js')}); echo -n CC=$CC CXX=$CXX LD=$LD` ]
+    , { env: Object.assign({}, process.env, { CC: 'fail', CXX: 'fail', LD: 'fail' }), encoding: 'utf8' })
   debug('exports command stdout "%s"', stdout)
-  debug('exports command stderr "%s"', stderr)
-  assert.equal(status, 0, 'exit success')
+  assert.equal(/CC=/i.test(stdout), true, 'has CC')
   assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
   assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
   assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
