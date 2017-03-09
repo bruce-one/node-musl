@@ -25,6 +25,7 @@
     "musl-env": "./bin/env.js"
   },
   "scripts": {
+    "clean": "node-pre-gyp clean && node-gyp clean && rm -rf bootstrap",
     "test": "node test/test.js",
     "install": "node-pre-gyp install --fallback-to-build --target_platform=hack",
     "postinstall": "node symlinks.js"
