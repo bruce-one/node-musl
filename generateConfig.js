@@ -7,7 +7,7 @@ const target = `${muslArch}-linux-musl`
 
 console.log(`
 TARGET=${target}
-OUTPUT=${path.resolve(__dirname, `${process.arch}-linux-musl`)}
+OUTPUT=${path.resolve(__dirname, `${arch}-linux-musl`)}
 DL_CMD=${path.resolve(__dirname, 'download.js')}
 
 COMMON_CONFIG += CC="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-linux-musl-gcc`)} -static --static" CXX="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-linux-musl-g++`)} -static --static" LD="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-linux-musl-ld`)} -static"
