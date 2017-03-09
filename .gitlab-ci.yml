@@ -12,4 +12,4 @@ test_build:
     - npm run test
 
 after_script:
-  - node-pre-gyp info
+  - $(npm bin)/node-pre-gyp info
