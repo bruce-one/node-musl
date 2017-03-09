@@ -10,6 +10,3 @@ test_build:
     - node-gyp clean
     - npm install --fallback-to-build=false
     - npm run test
-
-after_script:
-  - $(npm bin)/node-pre-gyp info
