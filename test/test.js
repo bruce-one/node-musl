@@ -20,20 +20,24 @@ new Promise( function testGcc(resolve) {
   })
 })
 .then( () => {
-  const { stdout, status } = spawnSync(
+  const { stderr, stdout, status } = spawnSync(
     join(__dirname, '..', 'bin', 'env.js')
     , [ 'sh', '-c', 'echo CC=$CC CXX=$CXX LD=$LD' ]
     , { env: { CC: 'fail', CXX: 'fail', LD: 'fail' }, encoding: 'utf8' })
+  debug('env command stdout "%s"', stdout)
+  debug('env command stderr "%s"', stderr)
   assert.equal(status, 0, 'exit success')
   assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
   assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
   assert.equal(/LD=(\s|fail)/i.test(stdout), false, 'set LD')
 })
 .then( () => {
-  const { stdout, status } = spawnSync(
+  const { stdout, stderr, status } = spawnSync(
     'sh'
     , [ '-c', `eval $(${join(__dirname, '..', 'bin', 'exports.js')});  echo CC=$CC CXX=$CXX LD=$LD` ]
     , { env: { CC: 'fail', CXX: 'fail', LD: 'fail' }, encoding: 'utf8' })
+  debug('exports command stdout "%s"', stdout)
+  debug('exports command stderr "%s"', stderr)
   assert.equal(status, 0, 'exit success')
   assert.equal(/CC=(\s|fail)/i.test(stdout), false, 'set CC')
   assert.equal(/CXX=(\s|fail)/i.test(stdout), false, 'set CXX')
