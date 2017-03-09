@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const debug = require('debug')('node-musl')
 const { join } = require('path')
 const { fork, spawnSync } = require('child_process')
 const { unlinkSync } = require('fs')
@@ -7,12 +8,13 @@ const assert = require('assert')
 
 const bin = join(__dirname, 'hello.out')
 
-const proc = fork(join(__dirname, '..'), [ '-static', join(__dirname, 'hello.c'), '-o', bin ], { cwd: __dirname })
+const proc = fork(join(__dirname, '..'), [ '-v', '-static', join(__dirname, 'hello.c'), '-o', bin ], { cwd: __dirname })
 
 process.on('unhandledRejection', (err) => { throw err })
 
 new Promise( function testGcc(resolve) {
-  proc.on('exit', () => {
+  proc.on('exit', (code) => {
+    debug('hello.c compile exit code was "%s"', code)
     checkBinary()
     resolve()
   })
@@ -45,6 +47,7 @@ new Promise( function testGcc(resolve) {
   assert.equal(/ld$/i.test(process.env.LD), true, 'set LD')
   Object.keys(process.env).forEach( (k) => env[k] ? process.env[k] = env[k] : delete process.env[k])
 })
+.then( () => console.log('All tests passed.'))
 
 function checkBinary() {
   const hProc = spawnSync(bin)

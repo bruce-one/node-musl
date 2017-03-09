@@ -1,5 +1,6 @@
 'use strict'
 
+const debug = require('debug')('node-musl')
 const path = require('path')
 const fs = require('fs')
 
@@ -15,6 +16,7 @@ Array('gcc', 'g++', 'ld').forEach( (bin) => {
   const target = path.relative(path.join(__dirname, 'bin'), path.join(binding_path, 'bin', `${muslArch}-linux-musl-${bin}`))
   fs.unlink(binPath, () => {
     fs.symlink(target, binPath, (err) => {
+      debug('symlink "%s" created targeting "%s"', binPath, target)
       if(err) throw err
     })
   })

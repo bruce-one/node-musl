@@ -2,6 +2,7 @@
 
 // converts hardlinks to symlinks, because node-pre-gyp (by virtue of it's tar module/impl) doesn't handle them well
 
+const debug = require('debug')('node-musl')
 const { unlinkSync, symlinkSync } = require('fs')
 const { join, relative, dirname } = require('path')
 
@@ -17,10 +18,14 @@ const byIno = paths.reduce( (possibleDups, f) => {
 
 const dupInos = Object.keys(byIno).filter( (k) => byIno[k].length > 1)
 
+debug('found "%s" inodes with multiple references', dupInos.length)
+
 dupInos.forEach( (ino) => {
   const [ target, ...rest ] = byIno[ino].map( ({ path }) => path)
   rest.forEach( (path) => {
     unlinkSync(path)
-    symlinkSync(relative(dirname(path), target), path)
+    const relativeTarget = relative(dirname(path), target)
+    symlinkSync(relativeTarget, path)
+    debug('replacing hardlink "%s" with symlink targeting "%s"', path, relativeTarget)
   })
 })

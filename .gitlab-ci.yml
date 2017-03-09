@@ -1,6 +1,8 @@
 image: node:6
 
 test_build:
+  variables:
+    DEBUG: node-musl
   script:
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test

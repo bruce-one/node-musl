@@ -42,6 +42,7 @@
   "license": "ISC",
   "gypfile": true,
   "dependencies": {
+    "debug": "^2.6.1",
     "klaw-sync": "^1.1.2",
     "node-pre-gyp": "^0.6.33"
   },
