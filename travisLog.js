@@ -8,7 +8,7 @@ let stderr = Buffer.alloc(0)
 const proc = spawn(process.argv[2], process.argv.slice(3))
 
 proc.stdout.on('data', (d) => {
-  const MAKE_REGEXP = /^make\[[12]\].*$/gm
+  const MAKE_REGEXP = /^make\[[\d]\].*$/gm
   const dataStr = d.toString('utf8')
   let match
   while( (match = MAKE_REGEXP.exec(dataStr)) != null) console.log(match[0])
