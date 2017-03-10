@@ -4,10 +4,12 @@ test_build:
   variables:
     DEBUG: node-musl
   script:
+    - set -x
     - apt-get update && apt-get install -y build-essential texinfo
+    - npm install debug
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test
-    - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}" ; if test "${COMMIT_MESSAGE#*'[publish]'}" "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi
+    - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}"; if fgrep -q '[publish]' <<<"${COMMIT_MESSAGE}"; then PUBLISH_BINARY=true; fi;
     - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish; fi
     - npm run clean
     - npm install --fallback-to-build=false --unsafe-perm
