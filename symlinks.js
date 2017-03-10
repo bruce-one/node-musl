@@ -4,11 +4,11 @@ const debug = require('debug')('node-musl')
 const path = require('path')
 const fs = require('fs')
 
+const arch = process.argv[2] || process.arch
+
 const binary = require('node-pre-gyp')
-const binding_path = path.resolve(binary.find(path.resolve(path.join(__dirname,'./package.json'))), '..')
+const binding_path = path.resolve(binary.find(path.resolve(path.join(__dirname,'./package.json')), { target_arch: arch }), '..')
 
-
-const arch = process.argv[2] || path.basename(binding_path).split('-')[0]
 const muslArch = arch === 'x64' ? 'x86_64' : (arch === 'ia32' ? 'i686' : arch)
 
 Array('gcc', 'g++', 'ld').forEach( (bin) => {

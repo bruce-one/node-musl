@@ -1,8 +1,6 @@
 image: node:6
 
-test_build:
-  variables:
-    DEBUG: node-musl
+.template: &job_template
   script:
     - set -x
     - apt-get update && apt-get install -y build-essential texinfo
@@ -10,7 +8,19 @@ test_build:
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test
     - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}"; if fgrep -q '[publish]' <<<"${COMMIT_MESSAGE}"; then PUBLISH_BINARY=true; fi;
-    - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish; fi
+    - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package && $(npm bin)/node-pre-gyp-github publish -r; fi
     - npm run clean
     - npm install --fallback-to-build=false --unsafe-perm
     - npm run test
+
+test_build_x64:
+  <<: *job_template
+  variables:
+    DEBUG: node-musl
+    BUILD_ARCH: x64
+
+test_build_ia32:
+  <<: *job_template
+  variables:
+    DEBUG: node-musl
+    BUILD_ARCH: ia32

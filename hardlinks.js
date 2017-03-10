@@ -8,7 +8,9 @@ const { join, relative, dirname } = require('path')
 
 const klawSync = require('klaw-sync')
 
-const paths = klawSync(`${process.arch}-linux-musl`, { nodir: true })
+const arch = process.argv[2] || path.basename(binding_path).split('-')[0]
+
+const paths = klawSync(`${arch}-linux-musl`, { nodir: true })
 
 const byIno = paths.reduce( (possibleDups, f) => {
     const arr = possibleDups[f.stats.ino] || []

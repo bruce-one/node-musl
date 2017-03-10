@@ -27,8 +27,8 @@
   "scripts": {
     "clean": "node-pre-gyp clean && node-gyp clean && rm -rf bootstrap",
     "test": "node test/test.js",
-    "install": "node-pre-gyp install --fallback-to-build --target_platform=hack",
-    "postinstall": "node symlinks.js"
+    "install": "node-pre-gyp install --fallback-to-build --target_platform=hack --target_arch=${BUILD_ARCH:-$(node -p process.arch)}",
+    "postinstall": "node symlinks.js ${BUILD_ARCH:-$(node -p process.arch)}"
   },
   "author": {
     "name": "Bryce Gibson"
