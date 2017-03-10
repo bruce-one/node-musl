@@ -26,9 +26,12 @@ process.on('beforeExit', () => {
   stdout = stderr = Buffer.alloc(0)
 })
 
-proc.on('close', (code) => process.exitCode = code)
+proc.on('exit', (code, sig) => process.exitCode = code != null ? code : (sig ? 1 : 0))
 
-Array('SIGINT', 'SIGTERM').forEach( (sig) => process.on(sig, () => proc.kill(sig)))
+Array('SIGINT', 'SIGTERM').forEach( (sig) => process.on(sig, () => {
+  process.exitCode = 1 // assumes failure; this will likely be overridden in `proc.on('exit'...`
+  proc.kill(sig)
+}))
 
 !function stillRunning() {
   console.log('Build running...')
@@ -36,7 +39,7 @@ Array('SIGINT', 'SIGTERM').forEach( (sig) => process.on(sig, () => proc.kill(sig
 }()
 
 setTimeout(function abort() {
-  process.exitCode = 1
+  process.exitCode = 1 // assumes failure; this will likely be overridden in `proc.on('exit'...`
   proc.kill('SIGTERM')
   setTimeout( () => proc.kill('SIGKILL'), 5e3 ).unref()
 }, 180 * 60e3).unref()
