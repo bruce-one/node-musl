@@ -10,3 +10,4 @@ build/
 src/*-musl/
 .env
 /node_modules/
+/ignore/
