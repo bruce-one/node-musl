@@ -16,7 +16,7 @@ node installed.
     npm i node-musl # takes a long time...
     $(npm bin)/musl-env ./configure --fully-static # musl-env sets CC, CXX, LD
     $(npm bin)/musl-env make -j$(node -p 'os.cpus().length + 1')
-    ldd ./out/Release/node || echo 'node is static'
+    file ./out/Release/node
     strip --strip-all ./out/Release/node
 
     # eval "$("$(npm bin)/musl-exports")" # sets CC CXX and LD in the shell
