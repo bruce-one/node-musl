@@ -20,7 +20,7 @@ RUN NODE_VERSION="$(curl https://semver.io/node/resolve/6)" ; curl https://nodej
 
 RUN mkdir /hbb_musl && cd /hbb_musl && \
     source /hbb/activate && \
-    env PATH="/opt/node/bin:${PATH}" npm i https://github.com/bruce-one/node-musl/archive/master.tar.gz --unsafe-perm --loglevel=error && \
+    env PATH="/opt/node/bin:${PATH}" npm i node-musl --unsafe-perm --loglevel=error && \
     ln -s $(env PATH="/opt/node/bin:${PATH}" npm bin) bin && \
     echo '#!/usr/bin/env sh' > /hbb_musl/activate && \
     echo 'env PATH="/opt/node/bin:${PATH}" /hbb_musl/bin/musl-exports' >> /hbb_musl/activate && \
