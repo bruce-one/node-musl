@@ -1,1 +1,12 @@
-Placeholder. Replaced by the postinstall script.
+#!/usr/bin/env node
+// Placeholder. Replaced by the postinstall script.
+
+const { fork, spawnSync } = require('child_process')
+const { join } = require('path')
+
+fork(join(__dirname, '..', 'symlinks.js'), [ process.env.BUILD_ARCH || process.arch ])
+  .on('exit', (code) => {
+    if(code) throw new Error(`Unexpected exit code ${code}`)
+    const { status } = spawnSync(__filename, process.argv.slice(2), { stdio: 'inherit' })
+    process.exitCode = status
+  })
