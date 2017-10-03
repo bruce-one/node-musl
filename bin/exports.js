@@ -8,8 +8,8 @@ const LD = module.exports.LD = path.join(__dirname, 'musl-ld')
 
 if(require.main === module) {
   console.log(`
-    export CC=${CC}
-    export CXX=${CXX}
-    export LD=${LD}
+    export CC='${CC}'
+    export CXX='${CXX}'
+    export LD='${LD}'
   `.replace(/^ +|^\n/gm, ''))
 }
