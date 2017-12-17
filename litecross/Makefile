@@ -60,23 +60,28 @@ FULL_TOOLCHAIN_CONFIG = --enable-languages=c,c++ \
 	--disable-libmudflap --disable-libsanitizer \
 	--disable-gnu-indirect-function \
 	--disable-libmpx \
+	--enable-deterministic-archives \
 	--enable-libstdcxx-time
 
 FULL_MUSL_CONFIG = $(MUSL_CONFIG) \
 	--prefix= --host=$(TARGET)
 
-ifeq ($(NATIVE),)
+ifneq ($(NATIVE),)
+HOST:=$(TARGET)
+endif
+
+ifeq ($(HOST),)
 SYSROOT = /$(TARGET)
 FULL_TOOLCHAIN_CONFIG += --with-build-sysroot=$(CURDIR)/obj_sysroot
 FULL_MUSL_CONFIG += CC="$(XGCC)" LIBCC="../obj_toolchain/$(TARGET)/libgcc/libgcc.a" 
 MUSL_VARS = AR=../obj_toolchain/binutils/ar RANLIB=../obj_toolchain/binutils/ranlib
 obj_musl/.lc_configured: | obj_toolchain/gcc/.lc_built
 obj_musl/.lc_built: | obj_toolchain/$(TARGET)/libgcc/libgcc.a
-obj_toolchain/gcc/.lc_built: | obj_sysroot/usr obj_sysroot/lib64 obj_sysroot/include
+obj_toolchain/gcc/.lc_built: | obj_sysroot/usr obj_sysroot/lib32 obj_sysroot/lib64 obj_sysroot/include
 obj_toolchain/.lc_built: | obj_sysroot/.lc_libs obj_sysroot/.lc_headers
 else
 SYSROOT = /
-FULL_TOOLCHAIN_CONFIG += --host=$(TARGET)
+FULL_TOOLCHAIN_CONFIG += --host=$(HOST)
 MUSL_VARS = 
 endif
 
@@ -153,6 +158,9 @@ obj_sysroot/include:
 obj_sysroot/usr: | obj_sysroot
 	ln -sf . $@
 
+obj_sysroot/lib32: | obj_sysroot
+	ln -sf lib $@
+
 obj_sysroot/lib64: | obj_sysroot
 	ln -sf lib $@
 
@@ -198,7 +206,7 @@ ifneq ($(LINUX_SRCDIR),)
 TARGET_ARCH = $(firstword $(subst -, ,$(TARGET)))
 TARGET_ARCH_MANGLED = $(patsubst i%86,x86,$(patsubst aarch64%,arm64%,$(TARGET_ARCH)))
 LINUX_ARCH_LIST = $(sort $(notdir $(wildcard $(LINUX_SRCDIR)/arch/*)))
-LINUX_ARCH = $(firstword $(foreach a,$(LINUX_ARCH_LIST),$(findstring $(a),$(TARGET_ARCH_MANGLED))))
+LINUX_ARCH = $(lastword $(foreach a,$(LINUX_ARCH_LIST),$(if $(filter $(a)%,$(TARGET_ARCH_MANGLED)),$(a))))
 ifneq ($(LINUX_ARCH),)
 all: kernel-headers
 install: install-kernel-headers
