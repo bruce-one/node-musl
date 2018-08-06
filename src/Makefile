@@ -3,7 +3,7 @@ SOURCES = sources
 
 CONFIG_SUB_REV = 3d5db9ebe860
 BINUTILS_VER = 2.27
-GCC_VER = 6.3.0
+GCC_VER = 6.4.0
 MUSL_VER = 1.1.19
 GMP_VER = 6.1.1
 MPC_VER = 1.0.3
@@ -25,17 +25,9 @@ LINUX_SITE = https://cdn.kernel.org/pub/linux/kernel
 
 DL_CMD = wget -c -O
 
-ifneq ($(NATIVE),)
-HOST := $(TARGET)
-endif
-
-ifneq ($(HOST),)
-BUILD_DIR = build/$(HOST)/$(TARGET)
-OUTPUT = $(CURDIR)/output-$(HOST)
-else
-BUILD_DIR = build/local/$(TARGET)
-OUTPUT = $(CURDIR)/output
-endif
+HOST = $(if $(NATIVE),$(TARGET))
+BUILD_DIR = build/$(if $(HOST),$(HOST),local)/$(TARGET)
+OUTPUT = $(CURDIR)/output$(if $(HOST),-$(HOST))
 
 REL_TOP = ../../..
 
