@@ -344,9 +344,9 @@ node-fetch@^2.1.1:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.2.0.tgz#4ee79bde909262f9775f731e3656d0db55ced5b5"
 
-node-pre-gyp-github@^1.4.1:
+"node-pre-gyp-github@git+https://github.com/bruce-one/node-pre-gyp-github#bb56bb92e7fd6cc08e1273c53d61aa7d8914b493":
   version "1.4.1"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp-github/-/node-pre-gyp-github-1.4.1.tgz#b1bb877850e845864775f9906d91b6cdfe77a6bc"
+  resolved "git+https://github.com/bruce-one/node-pre-gyp-github#bb56bb92e7fd6cc08e1273c53d61aa7d8914b493"
   dependencies:
     "@octokit/rest" "^15.9.5"
     commander "^2.17.0"

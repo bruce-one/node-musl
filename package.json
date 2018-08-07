@@ -48,6 +48,6 @@
     "node-pre-gyp": "^0.10.3"
   },
   "devDependencies": {
-    "node-pre-gyp-github": "^1.4.1"
+    "node-pre-gyp-github": "git+https://github.com/bruce-one/node-pre-gyp-github#bb56bb92e7fd6cc08e1273c53d61aa7d8914b493"
   }
 }
