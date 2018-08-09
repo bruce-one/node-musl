@@ -4,30 +4,20 @@
 
 const debug = require('debug')('node-musl')
 const fs = require('fs')
-const { unlinkSync, symlinkSync } = fs
-const { join, relative, dirname } = require('path')
+const { statSync, lstatSync, unlinkSync, symlinkSync } = fs
+const { sep, join, relative, dirname } = require('path')
 
 const klawSync = require('klaw-sync')
 
 const arch = process.argv[2] || path.basename(binding_path).split('-')[0]
 
-const readdirSync = fs.readdirSync
-const statSync = fs.statSync
-let statCache
-fs.readdirSync = function(...args) {
-  statCache = {}
-  return readdirSync(...args).filter( (p) => {
-    try {
-      statCache[p] = statSync(p)
-      return true
-    } catch(e) {
-      return false
-    }
-  })
-}
-
 fs.statSync = function(p) {
-  return statCache[p] || statSync(p)
+  try {
+    return statSync(p)
+  } catch(e) {
+    if(e.code === 'ENOENT') return lstatSync(p)
+    throw e
+  }
 }
 
 const paths = klawSync(`${arch}-linux-musl`, { nodir: true, fs: fs })
