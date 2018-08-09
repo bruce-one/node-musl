@@ -11,3 +11,4 @@ src/*-musl/
 .env
 /node_modules/
 /ignore/
+/ccache/

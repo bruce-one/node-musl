@@ -3,7 +3,10 @@ image: node:6
 .template: &job_template
   script:
     - set -x
-    - apt-get update && apt-get install -y build-essential texinfo
+    - apt-get update && apt-get install -y build-essential texinfo ccache
+    - /usr/sbin/update-ccache-symlinks
+    - export CCACHE_DIR="$(pwd)/ccache"
+    - export PATH="/usr/lib/ccache:$PATH"
     - npm install debug
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test
@@ -15,12 +18,20 @@ image: node:6
 
 test_build_x64:
   <<: *job_template
+  cache:
+    key: test_build_x64
+    paths:
+      - ccache
   variables:
     DEBUG: node-musl
     BUILD_ARCH: x64
 
 test_build_ia32:
   <<: *job_template
+  cache:
+    key: test_build_x64
+    paths:
+      - ccache
   variables:
     DEBUG: node-musl
     BUILD_ARCH: ia32
