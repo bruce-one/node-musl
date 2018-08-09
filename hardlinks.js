@@ -20,7 +20,7 @@ fs.statSync = function(p) {
   }
 }
 
-const paths = klawSync(`${arch}-linux-musl`, { nodir: true, fs: fs })
+const paths = klawSync(`${arch}-linux-musl`, { nodir: true, fs: fs, filter: (f) => f.isDirectory() || f.isFile() })
 
 const byIno = paths.reduce( (possibleDups, f) => {
     const arr = possibleDups[f.stats.ino] || []
