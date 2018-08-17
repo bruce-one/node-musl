@@ -6,7 +6,7 @@ const fs = require('fs')
 
 const arch = process.argv[2] || process.arch
 
-const binary = require('node-pre-gyp')
+const binary = require('@bryce-gibson/node-pre-gyp')
 const binding_path = path.resolve(binary.find(path.resolve(path.join(__dirname,'./package.json')), { target_arch: arch }), '..')
 
 const muslArch = arch === 'x64' ? 'x86_64' : (arch === 'ia32' ? 'i686' : arch)

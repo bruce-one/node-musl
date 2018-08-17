@@ -43,9 +43,9 @@
   "license": "ISC",
   "gypfile": true,
   "dependencies": {
+    "@bryce-gibson/node-pre-gyp": "^0.10.0",
     "debug": "^3.1.0",
-    "klaw-sync": "^4.0.0",
-    "node-pre-gyp": "^0.10.3"
+    "klaw-sync": "^4.0.0"
   },
   "devDependencies": {
     "node-pre-gyp-github": "git+https://github.com/bruce-one/node-pre-gyp-github#f1ef240cd409bc11234d37465aa51ecec2db7a62"
