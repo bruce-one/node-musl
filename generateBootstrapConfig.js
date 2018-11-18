@@ -1,12 +1,10 @@
 const path = require('path')
 
-const arch = process.argv[2] || process.arch
-const muslArch = arch === 'x64' ? 'x86_64' : (arch === 'ia32' ? 'i686' : arch)
-
-const target = `${muslArch}-linux-musl`
+const mapping = require('./mapping')
+const muslArch = process.argv[2] || mapping[mapping.getName()]
 
 console.log(`
-TARGET=${target}
+TARGET=${muslArch}
 OUTPUT=${path.resolve(__dirname, 'bootstrap')}
 DL_CMD=${path.resolve(__dirname, 'download.js')}
 

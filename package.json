@@ -12,7 +12,8 @@
   ],
   "cpu": [
     "x64",
-    "ia32"
+    "ia32",
+    "arm"
   ],
   "directories": {
     "test": "test"
@@ -27,15 +28,15 @@
   "scripts": {
     "clean": "node-pre-gyp clean && node-gyp clean && rm -rf bootstrap",
     "test": "node test/test.js",
-    "install": "node-pre-gyp install --fallback-to-build --target_platform=hack --target_arch=${BUILD_ARCH:-$(node -p process.arch)}",
-    "postinstall": "node symlinks.js ${BUILD_ARCH:-$(node -p process.arch)}"
+    "install": "node-pre-gyp install --fallback-to-build --target_platform=hack --target_arch=${BUILD_ARCH:-$(node mapping.js)}",
+    "postinstall": "node symlinks.js ${BUILD_ARCH:-$(node mapping.js)}"
   },
   "author": {
     "name": "Bryce Gibson"
   },
   "binary": {
     "module_name": "node_musl",
-    "module_path": "{arch}-linux-musl",
+    "module_path": "{arch}",
     "host": "https://github.com/bruce-one/node-musl/releases/download/",
     "remote_path": "{version}",
     "package_name": "{module_name}-v{version}-{arch}.tar.gz"

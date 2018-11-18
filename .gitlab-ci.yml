@@ -11,7 +11,7 @@ image: node:6
     - ./travisLog.js npm install --build-from-source --unsafe-perm
     - npm run test
     - COMMIT_MESSAGE="${COMMIT_MESSAGE:-$(git show --format=%B -n 1 HEAD|head -n 1)}"; if fgrep -q '[publish]' <<<"${COMMIT_MESSAGE}"; then PUBLISH_BINARY=true; fi;
-    - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package --target_arch=${BUILD_ARCH:-$(node -p process.arch)} && $(npm bin)/node-pre-gyp-github publish -r; fi
+    - if [[ $PUBLISH_BINARY == true ]]; then $(npm bin)/node-pre-gyp package --target_arch=${BUILD_ARCH:-$(node mapping.js)} && $(npm bin)/node-pre-gyp-github publish -r; fi
     - npm run clean
     - npm install --fallback-to-build=false --unsafe-perm
     - npm run test

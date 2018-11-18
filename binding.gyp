@@ -14,9 +14,9 @@
         {
           "action_name": "Build static toolchain",
           "inputs": [ "src/" ],
-          "outputs": [ "<(target_arch)-linux-musl" ],
+          "outputs": [ "<(target_arch)" ],
           "message": "Building musl",
-          "action": [ "eval", "cd src/ && node ../generateConfig.js <(target_arch) > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'process.env.CI ? 1 : (os.cpus().length + 1)') && make install && cd .. && touch <(target_arch)-linux-musl/node_musl.node" ]
+          "action": [ "eval", "cd src/ && node ../generateConfig.js <(target_arch) > config.mak && make clean && MAKEFLAGS=-w make -j<!@(node -p 'process.env.CI ? 1 : (os.cpus().length + 1)') && make install && cd .. && touch <(target_arch)/node_musl.node" ]
         }
       ]
     }
