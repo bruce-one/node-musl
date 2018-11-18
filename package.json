@@ -18,6 +18,19 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "package.json",
+    "yarn.lock",
+    "*.js",
+    "binding.gyp",
+    "bin/*",
+    "src/{config.mak.dist,Makefile}",
+    "src/litecross/**/*",
+    "src/presets/**/*",
+    "test/**/*",
+    "src/hashes/**/*",
+    "src/patches/**/*"
+  ],
   "bin": {
     "musl-gcc": "./bin/musl-gcc",
     "musl-g++": "./bin/musl-g++",
