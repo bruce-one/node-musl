@@ -1,7 +1,8 @@
 const path = require('path')
 
 const mapping = require('./mapping')
-const muslArch = process.argv[2] || mapping[mapping.getName()]
+const arch = process.argv[2] || mapping.getName()
+const muslArch = mapping[arch]
 
 console.log(`
 TARGET=${muslArch}
