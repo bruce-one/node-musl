@@ -24,7 +24,7 @@ test_build_x64:
       - ccache
   variables:
     DEBUG: node-musl
-    BUILD_ARCH: x64
+    BUILD_ARCH: x86_64-linux-musl
 
 test_build_ia32:
   <<: *job_template
@@ -34,4 +34,4 @@ test_build_ia32:
       - ccache
   variables:
     DEBUG: node-musl
-    BUILD_ARCH: ia32
+    BUILD_ARCH: i686-linux-musl
