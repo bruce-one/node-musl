@@ -5,9 +5,10 @@ const path = require('path')
 const fs = require('fs')
 
 const mapping = require('./mapping')
-const muslArch = process.argv[2] || mapping[mapping.getName()]
+const arch = process.env.BUILD_ARCH || mapping.getName()
+const muslArch = mapping[arch]
 
-const binding_path = path.join(__dirname, muslArch)
+const binding_path = path.join(__dirname, arch)
 
 Array('gcc', 'g++', 'ld').forEach( (bin) => {
   const binPath = path.join(__dirname, 'bin', `musl-${bin}`)

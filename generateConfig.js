@@ -1,11 +1,12 @@
 const path = require('path')
 
 const mapping = require('./mapping')
-const muslArch = process.argv[2] || mapping[mapping.getName()]
+const arch = process.argv[2] || mapping.getName()
+const muslArch = mapping[arch]
 
 console.log(`
 TARGET=${muslArch}
-OUTPUT=${path.resolve(__dirname, muslArch)}
+OUTPUT=${path.resolve(__dirname, arch)}
 DL_CMD=${path.resolve(__dirname, 'download.js')}
 
 COMMON_CONFIG += CC="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-gcc`)} -static --static" CXX="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-g++`)} -static --static" LD="${path.resolve(__dirname, `bootstrap/bin/${muslArch}-ld`)} -static"
