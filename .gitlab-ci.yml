@@ -1,4 +1,4 @@
-image: node:6
+image: node:10
 
 .template: &job_template
   script:
