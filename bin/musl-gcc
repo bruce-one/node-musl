@@ -4,7 +4,8 @@
 const { fork, spawnSync } = require('child_process')
 const { join } = require('path')
 
-fork(join(__dirname, '..', 'symlinks.js'), [ process.env.BUILD_ARCH || process.arch ])
+const mapping = require('./mapping')
+fork(join(__dirname, '..', 'symlinks.js'), [ process.env.BUILD_ARCH || mapping[mapping.getName()] ])
   .on('exit', (code) => {
     if(code) throw new Error(`Unexpected exit code ${code}`)
     const { status } = spawnSync(__filename, process.argv.slice(2), { stdio: 'inherit' })
