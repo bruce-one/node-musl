@@ -26,24 +26,5 @@ Node from loading any native modules, using `--partly-static` is the recommended
 alternative if you still want dlopen (because otherwise there are issues with
 libgcc).
 
-Native Modules
-==============
-
-An example of building node with node-musl and using a native module (sqlite3)
-is:
-
-    npm i node-musl
-
-    mkdir node; cd node
-    curl -L https://nodejs.org/dist/node-latest.tar.gz | tar xvz --strip-components=1
-    eval "$("$(npm bin)/musl-exports")"
-    ./configure --partly-static
-    make -j$(node -p 'os.cpus().length + 1')
-
-    # --scripts-prepend-node-path is to ensure we use the just-built node executable
-    # -static-libgcc is required for sqlite3 to build correctly
-    LDFLAGS='-static-libgcc -static-libstdc++' ./node ./deps/npm/bin/npx-cli.js npm install sqlite3 --build-from-source --scripts-prepend-node-path
-    ./node -e 'sqlite3 = require("sqlite3"); db = new sqlite3.Database(":memory:"); db.get("select 1", (err, r) => console.log(r));'
-
 Licence: This code is ISC, however note that musl-cross-make is imported into
 this repo and it's licence is unclear.
