@@ -22,9 +22,7 @@ node installed.
     # eval "$("$(npm bin)/musl-exports")" # sets CC CXX and LD in the shell
 
 Note: Using `--fully-static` (as shown above) will disable dlopen which prevents
-Node from loading any native modules, using `--partly-static` is the recommended
-alternative if you still want dlopen (because otherwise there are issues with
-libgcc).
+Node from loading any native modules.
 
 Licence: This code is ISC, however note that musl-cross-make is imported into
 this repo and it's licence is unclear.
