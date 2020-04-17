@@ -48,31 +48,28 @@ GCC_CONFIG_FOR_TARGET += --with-float=hard
 endif
 
 ifneq ($(LIBTOOL),)
-
-ifeq  ($(LIBTOOL_STATIC),)
-LIBTOOL_STATIC = $(LIBTOOL)-static
-endif
-
-LIBTOOL_ARG        = LIBTOOL=$(LIBTOOL)
-LIBTOOL_STATIC_ARG = LIBTOOL=$(LIBTOOL_STATIC)
-
+LIBTOOL_ARG = LIBTOOL=$(LIBTOOL)
 endif
 
 MAKE += MULTILIB_OSDIRNAMES=
 MAKE += INFO_DEPS= infodir=
-MAKE += ac_cv_prog_lex_root=lex.yy.c
+MAKE += ac_cv_prog_lex_root=lex.yy
 MAKE += MAKEINFO=false
 
 FULL_BINUTILS_CONFIG = \
+	--disable-separate-code \
 	$(COMMON_CONFIG) $(BINUTILS_CONFIG) $(TOOLCHAIN_CONFIG) \
 	--disable-werror \
 	--target=$(TARGET) --prefix= \
 	--libdir=/lib --disable-multilib \
-	--with-sysroot=$(SYSROOT)
+	--with-sysroot=$(SYSROOT) \
+	--enable-deterministic-archives
 
 FULL_GCC_CONFIG = --enable-languages=c,c++ \
 	$(GCC_CONFIG_FOR_TARGET) \
 	$(COMMON_CONFIG) $(GCC_CONFIG) $(TOOLCHAIN_CONFIG) \
+	--disable-bootstrap \
+	--disable-assembly \
 	--disable-werror \
 	--target=$(TARGET) --prefix= \
 	--libdir=/lib --disable-multilib \
@@ -81,8 +78,7 @@ FULL_GCC_CONFIG = --enable-languages=c,c++ \
 	--disable-libmudflap --disable-libsanitizer \
 	--disable-gnu-indirect-function \
 	--disable-libmpx \
-	--enable-deterministic-archives \
-	--enable-libstdcxx-time
+	--enable-libstdcxx-time=rt
 
 FULL_MUSL_CONFIG = $(MUSL_CONFIG) \
 	--prefix= --host=$(TARGET)
@@ -91,8 +87,15 @@ ifneq ($(NATIVE),)
 HOST:=$(TARGET)
 endif
 
+ifeq ($(BUILD),)
+GUESS = $(shell cd $(GCC_SRCDIR) && ./config.guess)
+TARGET_CANON = $(shell cd $(GCC_SRCDIR) && ./config.sub $(TARGET))
+BUILD = $(GUESS)$(if $(subst $(TARGET_CANON),,$(GUESS)),,xx)
+endif
+
 ifeq ($(HOST),)
 SYSROOT = /$(TARGET)
+FULL_BINUTILS_CONFIG += --build=$(BUILD) --host=$(BUILD)
 FULL_GCC_CONFIG += --with-build-sysroot=$(CURDIR)/obj_sysroot \
 	AR_FOR_TARGET=$(PWD)/obj_binutils/binutils/ar \
 	AS_FOR_TARGET=$(PWD)/obj_binutils/gas/as-new \
@@ -103,6 +106,7 @@ FULL_GCC_CONFIG += --with-build-sysroot=$(CURDIR)/obj_sysroot \
 	RANLIB_FOR_TARGET=$(PWD)/obj_binutils/binutils/ranlib \
 	READELF_FOR_TARGET=$(PWD)/obj_binutils/binutils/readelf \
 	STRIP_FOR_TARGET=$(PWD)/obj_binutils/binutils/strip-new \
+	--build=$(BUILD) --host=$(BUILD) \
 	# end
 FULL_MUSL_CONFIG += CC="$(XGCC)" LIBCC="../obj_gcc/$(TARGET)/libgcc/libgcc.a" 
 MUSL_VARS = AR=../obj_binutils/binutils/ar RANLIB=../obj_binutils/binutils/ranlib
@@ -113,8 +117,8 @@ obj_gcc/.lc_built: | obj_sysroot/.lc_libs obj_sysroot/.lc_headers
 obj_gcc/.lc_configured: obj_binutils/.lc_built
 else
 SYSROOT = /
-FULL_BINUTILS_CONFIG += --host=$(HOST)
-FULL_GCC_CONFIG += --host=$(HOST)
+FULL_BINUTILS_CONFIG += --build=$(BUILD) --host=$(HOST)
+FULL_GCC_CONFIG += --build=$(BUILD) --host=$(HOST)
 MUSL_VARS = 
 endif
 
@@ -207,26 +211,14 @@ obj_binutils/.lc_configured: | obj_binutils src_binutils
 	touch $@
 
 obj_binutils/.lc_built: | obj_binutils/.lc_configured
-	cd obj_binutils && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_STATIC_ARG)" all
+	cd obj_binutils && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_ARG)" all
 	touch $@
 
 obj_gcc/.lc_configured: | obj_gcc src_gcc
 	cd obj_gcc && ../src_gcc/configure $(FULL_GCC_CONFIG)
 	touch $@
 
-obj_gcc/.lc_gmp_built: | obj_gcc/.lc_configured
-	cd obj_gcc && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_STATIC_ARG)" all-gmp
-	touch $@
-
-obj_gcc/.lc_mpfr_built: | obj_gcc/.lc_gmp_built
-	cd obj_gcc && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_STATIC_ARG)" all-mpfr
-	touch $@
-
-obj_gcc/.lc_mpc_built: | obj_gcc/.lc_mpfr_built
-	cd obj_gcc && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_STATIC_ARG)" all-mpc
-	touch $@
-
-obj_gcc/gcc/.lc_built: | obj_gcc/.lc_mpc_built
+obj_gcc/gcc/.lc_built: | obj_gcc/.lc_configured
 	cd obj_gcc && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_ARG)" all-gcc
 	touch $@
 
@@ -257,7 +249,7 @@ install-musl: | obj_musl/.lc_built
 	cd obj_musl && $(MAKE) $(MUSL_VARS) DESTDIR=$(DESTDIR)$(OUTPUT)$(SYSROOT) install
 
 install-binutils: | obj_binutils/.lc_built
-	cd obj_binutils && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_STATIC_ARG)" DESTDIR=$(DESTDIR)$(OUTPUT) install
+	cd obj_binutils && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_ARG)" DESTDIR=$(DESTDIR)$(OUTPUT) install
 
 install-gcc: | obj_gcc/.lc_built
 	cd obj_gcc && $(MAKE) MAKE="$(MAKE) $(LIBTOOL_ARG)" DESTDIR=$(DESTDIR)$(OUTPUT) install
