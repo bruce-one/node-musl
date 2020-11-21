@@ -4,6 +4,7 @@
 const { fork, spawnSync } = require('child_process')
 const { join } = require('path')
 
+const mapping = require('./mapping')
 const arch = process.env.BUILD_ARCH || mapping.getName()
 fork(join(__dirname, '..', 'symlinks.js'), [ mapping[arch] ])
   .on('exit', (code) => {
