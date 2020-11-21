@@ -58,7 +58,7 @@
   "gypfile": true,
   "dependencies": {
     "@bryce-gibson/node-pre-gyp": "^0.10.0",
-    "debug": "^4.1.1",
+    "debug": "^4.3.1",
     "klaw-sync": "^6.0.0"
   },
   "devDependencies": {
