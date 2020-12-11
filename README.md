@@ -25,4 +25,5 @@ Note: Using `--fully-static` (as shown above) will disable dlopen which prevents
 Node from loading any native modules.
 
 Licence: This code is ISC, however note that musl-cross-make is imported into
-this repo and it's licence is unclear.
+this repo. It is released under the MIT licence - whilst the artefacts it uses
+are under different licences.
